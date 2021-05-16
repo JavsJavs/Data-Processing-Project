@@ -1,0 +1,92 @@
+extends layout
+
+block content
+  div(style='margin:auto; text-align:center; margin-bottom:50px')
+    p(class="h2 center-block") Dashboard de Procesamiento de datos
+  div(id='chart' style='width:30%; margin:auto; margin-bottom:50px')
+  table(class="table table-striped table-dark") 
+    thead 
+      tr
+        th Usuario
+        th Fecha
+        th Texto
+        th Traducción
+        th Sentimiento
+    tbody(id='tweets-table')
+
+  script.
+    var options = {
+      chart: {
+        type: 'bar',
+        background: '#ffffff00',
+      },
+      series: [{
+        name: 'Count',
+        data: [0, 0, 0],
+      }],
+      plotOptions: {
+        bar: {
+            distributed: true
+        }
+      },
+      theme: {
+        mode: 'dark'  
+      },
+      colors: ['#41B883', '#4285F4', '#E46651'],
+      xaxis: {
+        categories: ['Positive', 'Neutral', 'Negative']
+      }
+    }
+
+    function updateChart(counts){
+      counts.forEach(count => {
+        console.log('caca')
+        const index = options.xaxis.categories.indexOf(count.sentiment);
+        console.log(index);
+        options.series[0].data[index] = count.count; 
+      })
+    }
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+    chart.render();
+
+  script.
+      let lastId = 0;
+      function addRow(data) {
+        var tableRef = document.getElementById('tweets-table');
+        var newRow   = tableRef.insertRow(0);
+        var nameCell  = newRow.insertCell(0);
+        var dateCell  = newRow.insertCell(1);
+        var textCell  = newRow.insertCell(2);
+        var transtextCell  = newRow.insertCell(3);
+        var sentimentCell  = newRow.insertCell(4);
+
+        var nameText  = document.createTextNode('@' + data.name);
+        var dateText  = document.createTextNode(data.date);
+        var textText  = document.createTextNode(data.text);
+        var transtextText  = document.createTextNode(data.transtext);
+        var sentimentText  = document.createTextNode(data.sentiment);
+
+        nameCell.appendChild(nameText);
+        dateCell.appendChild(dateText);
+        textCell.appendChild(textText);
+        transtextCell.appendChild(transtextText);
+        sentimentCell.appendChild(sentimentText);
+      }
+      setInterval(function () {
+        fetch('/updates/?last=' + lastId, {
+          method: 'get'
+        }).then(response => response.json())
+        .then(function(data) {
+          const {rows, counts} = data;
+
+          lastId = rows[0].id;
+          rows.forEach(row => {
+            addRow(row);
+          })
+          updateChart(counts);
+        }).catch(function(err) {
+          console.log('Error');
+        });
+      }, 2000)
