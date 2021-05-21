@@ -12,7 +12,10 @@ block content
         th Texto
         th Traducción
         th Sentimiento
+<<<<<<< HEAD
         th Sentimiento ML
+=======
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
     tbody(id='tweets-table')
 
   script.
@@ -41,6 +44,10 @@ block content
 
     function updateChart(counts){
       counts.forEach(count => {
+<<<<<<< HEAD
+=======
+        console.log('caca')
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
         const index = options.xaxis.categories.indexOf(count.sentiment);
         console.log(index);
         options.series[0].data[index] = count.count; 
@@ -53,29 +60,42 @@ block content
 
   script.
       let lastId = 0;
+<<<<<<< HEAD
       let waiting = 0;
       function addRow(data) {
         var tableRef = document.getElementById('tweets-table');
         var newRow   = tableRef.insertRow(-1);
+=======
+      function addRow(data) {
+        var tableRef = document.getElementById('tweets-table');
+        var newRow   = tableRef.insertRow(0);
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
         var nameCell  = newRow.insertCell(0);
         var dateCell  = newRow.insertCell(1);
         var textCell  = newRow.insertCell(2);
         var transtextCell  = newRow.insertCell(3);
         var sentimentCell  = newRow.insertCell(4);
+<<<<<<< HEAD
         var sentimentMLCell  = newRow.insertCell(5);
+=======
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
 
         var nameText  = document.createTextNode('@' + data.name);
         var dateText  = document.createTextNode(data.date);
         var textText  = document.createTextNode(data.text);
         var transtextText  = document.createTextNode(data.transtext);
         var sentimentText  = document.createTextNode(data.sentiment);
+<<<<<<< HEAD
         var sentimentMLText  = document.createTextNode(data.prediction);
+=======
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
 
         nameCell.appendChild(nameText);
         dateCell.appendChild(dateText);
         textCell.appendChild(textText);
         transtextCell.appendChild(transtextText);
         sentimentCell.appendChild(sentimentText);
+<<<<<<< HEAD
         sentimentMLCell.appendChild(sentimentMLText);
       }
       setInterval(function () {
@@ -98,4 +118,22 @@ block content
             console.log('Error');
           });
         }
+=======
+      }
+      setInterval(function () {
+        fetch('/updates/?last=' + lastId, {
+          method: 'get'
+        }).then(response => response.json())
+        .then(function(data) {
+          const {rows, counts} = data;
+
+          lastId = rows[0].id;
+          rows.forEach(row => {
+            addRow(row);
+          })
+          updateChart(counts);
+        }).catch(function(err) {
+          console.log('Error');
+        });
+>>>>>>> fc33634409170e7c73434d41356f159ec7148664
       }, 2000)
