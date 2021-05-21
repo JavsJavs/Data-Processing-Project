@@ -1,7 +1,11 @@
 accessKeys.json
 dashboard/node_modules
 dashboard/package-lock.json
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 datasets/tweets_clean.csv
 =======
 >>>>>>> fc33634409170e7c73434d41356f159ec7148664
+=======
+datasets/*
+>>>>>>> Stashed changes
